@@ -7,7 +7,7 @@ export default function (endpoint: string, router: Router, db: Db): Router {
   return router.post(endpoint, async (req, res) => {
     const schedule: Schedule = {
       medication: new ObjectId(req.params.medicationId),
-      day: req.body.day,
+      days: req.body.day,
       time: req.body.time,
     };
 

@@ -31,7 +31,7 @@ export type Medication = {
 export type Schedule = {
   _id?: ObjectId;
   medication: ObjectId;
-  day: Day;
+  days: Day[];
   time: string;
 };
 
