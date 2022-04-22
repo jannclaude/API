@@ -12,12 +12,26 @@ export default function (endpoint: string, router: Router, db: Db): Router {
         },
         {
           $lookup: {
+            from: 'medicines',
+            localField: 'medicine',
+            foreignField: '_id',
+            as: 'medicines',
+          },
+        },
+        {
+          $set: {
+            medicine: { $arrayElemAt: ['$medicines', 0] },
+          },
+        },
+        {
+          $lookup: {
             from: 'schedules',
             localField: '_id',
             foreignField: 'medication',
             as: 'schedules',
           },
         },
+        { $project: { medicines: 0 } },
       ])
       .toArray();
 
