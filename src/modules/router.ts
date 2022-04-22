@@ -15,6 +15,7 @@ export async function loadAPIRoutes(expressClient: Express, db: Db): Promise<num
     const file_path = pathToFileURL(route_path).href;
     const rel_path = relative(routes_path, route_path);
     const sections = rel_path.replace(/\\/g, '/').split('/');
+    const method = sections[sections.length - 1].split('.')[0].toUpperCase();
     const endpoint = `/${sections
       .slice(0, sections.length - 1)
       .map(section => {
@@ -27,7 +28,7 @@ export async function loadAPIRoutes(expressClient: Express, db: Db): Promise<num
     router = route(endpoint, router, db);
 
     totalRoutes++;
-    console.log(`Route Loaded: ${endpoint}`);
+    console.log(`Route Loaded: ${method} ${endpoint}`);
   }
 
   expressClient.use(router);
