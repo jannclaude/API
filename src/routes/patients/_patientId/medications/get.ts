@@ -12,7 +12,6 @@ export default function (endpoint: string, router: Router, db: Db): Router {
             patient: new ObjectId(req.params.patientId),
           },
         },
-        { $project: { patient: 0 } },
         {
           $lookup: {
             from: 'medicines',
