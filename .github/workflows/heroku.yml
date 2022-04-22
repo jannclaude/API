@@ -28,3 +28,7 @@ jobs:
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
           procfile: 'worker: node ./dist/main.js'
           buildpack: 'https://github.com/heroku/heroku-buildpack-nodejs.git'
+        env:
+          HD_MONGODB_DBNAME: ${{secrets.MONGODB_DBNAME}}
+          HD_MONGODB_CONNECTION_STRING: ${{secrets.MONGODB_CONNECTION_STRING}}
+          
