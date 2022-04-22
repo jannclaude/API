@@ -15,7 +15,11 @@
       "preLaunchTask": "tsc: build - tsconfig.json",
       "outFiles": [
         "${workspaceFolder}/dist/**/*.js"
-      ]
+      ],
+      "env": {
+        "MONGODB_DBNAME": "medicine-dispenser",
+        "MONGODB_CONNECTION_STRING": "mongodb+srv://m001-student:m001-mongodb-basics@sandbox.x2vw5.mongodb.net/medicine-dispenser?retryWrites=true&w=majority"
+      }
     }
   ]
 }
