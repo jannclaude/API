@@ -4,6 +4,9 @@
   "description": "",
   "main": "dist/index.ts",
   "type": "module",
+  "engines": {
+    "node": "16.x"
+  },
   "scripts": {
     "build": "tsc",
     "clean": "is-ci || rimraf {dist,*.mp3}",
