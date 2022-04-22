@@ -26,7 +26,7 @@ jobs:
           heroku_app_name: 'medcab-rrc'
           heroku_email: ${{secrets.HEROKU_EMAIL}}
           heroku_api_key: ${{secrets.HEROKU_API_KEY}}
-          procfile: 'worker: node ./dist/index.js'
+          procfile: 'web: node ./dist/index.js'
           buildpack: 'https://github.com/heroku/heroku-buildpack-nodejs.git'
         env:
           HD_MONGODB_DBNAME: ${{secrets.MONGODB_DBNAME}}
