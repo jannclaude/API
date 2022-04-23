@@ -17,6 +17,7 @@
         "${workspaceFolder}/dist/**/*.js"
       ],
       "env": {
+        "JWT_SECRET": "MedCabManagement",
         "MONGODB_DBNAME": "medicine-dispenser",
         "MONGODB_CONNECTION_STRING": "mongodb+srv://m001-student:m001-mongodb-basics@sandbox.x2vw5.mongodb.net/medicine-dispenser?retryWrites=true&w=majority"
       }

@@ -29,6 +29,7 @@ jobs:
           procfile: 'web: node ./dist/index.js'
           buildpack: 'https://github.com/heroku/heroku-buildpack-nodejs.git'
         env:
+          HD_JWT_SECRET: ${{secrets.JWT_SECRET}}
           HD_MONGODB_DBNAME: ${{secrets.MONGODB_DBNAME}}
           HD_MONGODB_CONNECTION_STRING: ${{secrets.MONGODB_CONNECTION_STRING}}
           
