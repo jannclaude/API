@@ -1,10 +1,12 @@
 import { Router } from 'express';
 import { ObjectId } from 'mongodb';
 import { db } from '../../../../index.js';
+import { middleware } from '../../../../modules/auth.js';
 import { Medication } from '../../../../utils/types.js';
 
 // Create a new medication for a patient
 export default function (endpoint: string, router: Router): Router {
+  return router.post(endpoint, middleware, async (req, res) => {
     const medication: Medication = {
       patient: new ObjectId(req.params.patientId),
       medicine: new ObjectId(req.body.medicine),

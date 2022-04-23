@@ -41,3 +41,16 @@ export type Medicine = {
   quantity: number;
   container: Container;
 };
+
+export type User = {
+  _id?: ObjectId;
+  name: string;
+  email: string;
+  password: string;
+};
+
+export type AccessToken = {
+  _id: ObjectId;
+  user: ObjectId;
+  token: string;
+};

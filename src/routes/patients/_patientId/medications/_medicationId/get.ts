@@ -1,9 +1,11 @@
 import { Router } from 'express';
 import { ObjectId } from 'mongodb';
 import { db } from '../../../../../index.js';
+import { middleware } from '../../../../../modules/auth.js';
 
 // Get a single medication of a patient
 export default function (endpoint: string, router: Router): Router {
+  return router.get(endpoint, middleware, async (req, res) => {
     const medication = await db
       .collection('medications')
       .aggregate([

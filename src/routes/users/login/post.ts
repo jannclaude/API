@@ -1,28 +1,23 @@
 import bcrypt from 'bcrypt';
 import { Router } from 'express';
 import { db } from '../../../index.js';
+import { authorize } from '../../../modules/auth.js';
+import { User } from '../../../utils/types.js';
 
 export default function (endpoint: string, router: Router): Router {
   return router.post(endpoint, async (req, res) => {
-    const collection = await db.collection('users');
-    const input = req.body;
+    const user = await db.collection('users').findOne({ email: req.body.email });
+    if (!user) return res.status(400).json({ error: "Email doesn't exist." });
 
-    try {
-      const person = await collection?.findOne({ email: input.email });
+    const validPassword = await bcrypt.compare(req.body.password, user.password);
+    if (!validPassword) return res.status(400).json({ error: 'Invalid password.' });
 
-      if (person) {
-        const validpassword = await bcrypt.compare(input.password, person.password);
+    const token = await authorize(user as User);
 
-        if (validpassword) {
-          return res.status(200).json({ id: person._id, status: 'OK' });
-        } else {
-          return res.status(400).json({ error: 'Invalid Password' });
-        }
-      } else {
-        res.status(401).json({ error: "Email doesn't exist" });
-      }
-    } catch (error) {
-      return res.status(500).json({ error: error });
-    }
+    const safeUser = { ...user };
+    safeUser.password = undefined;
+    safeUser.token = token;
+
+    res.json(safeUser);
   });
 }
