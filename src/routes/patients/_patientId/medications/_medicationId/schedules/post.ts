@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { Db, ObjectId } from 'mongodb';
-import { Schedule } from '../../../../../../utils/types';
+import { Schedule } from '../../../../../../utils/types.js';
 
 // Add a new schedule to the medication of a patient
 export default function (endpoint: string, router: Router, db: Db): Router {
