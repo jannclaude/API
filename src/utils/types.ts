@@ -1,8 +1,8 @@
 import { Router } from 'express';
-import { Db, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
 
 export interface APIRoute {
-  (endpoint: string, router: Router, db: Db): Router;
+  (endpoint: string, router: Router): Router;
 }
 
 export type Day =

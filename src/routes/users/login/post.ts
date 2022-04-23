@@ -1,8 +1,8 @@
 import bcrypt from 'bcrypt';
 import { Router } from 'express';
-import { Db } from 'mongodb';
+import { db } from '../../../index.js';
 
-export default function (endpoint: string, router: Router, db: Db): Router {
+export default function (endpoint: string, router: Router): Router {
   return router.post(endpoint, async (req, res) => {
     const collection = await db.collection('users');
     const input = req.body;

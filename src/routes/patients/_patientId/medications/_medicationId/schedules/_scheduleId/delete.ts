@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { Db, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
+import { db } from '../../../../../../../index.js';
 
 // Delete a single schedule from a medication of a patient
-export default function (endpoint: string, router: Router, db: Db): Router {
-  return router.delete(endpoint, async (req, res) => {
+export default function (endpoint: string, router: Router): Router {
     const result = await db
       .collection('schedules')
       .deleteOne({ _id: new ObjectId(req.params.scheduleId) });

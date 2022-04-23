@@ -1,11 +1,10 @@
 import { join, relative } from 'path';
 import { pathToFileURL } from 'url';
 import { Express, Router } from 'express';
-import { Db } from 'mongodb';
 import { getFiles } from '../utils/helpers.js';
 import { APIRoute } from '../utils/types.js';
 
-export async function loadAPIRoutes(expressClient: Express, db: Db): Promise<number> {
+export async function loadAPIRoutes(expressClient: Express): Promise<number> {
   let totalRoutes = 0;
   let router = Router();
 
@@ -25,7 +24,7 @@ export async function loadAPIRoutes(expressClient: Express, db: Db): Promise<num
       .join('/')}`;
 
     const route = (await import(file_path)).default as APIRoute;
-    router = route(endpoint, router, db);
+    router = route(endpoint, router);
 
     totalRoutes++;
     console.log(`Route Loaded: ${method} ${endpoint}`);

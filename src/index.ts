@@ -9,12 +9,12 @@ const client = new mongodb.MongoClient(process.env.MONGODB_CONNECTION_STRING!);
 
 await client.connect();
 
-const db = client.db('medcab');
+export const db = client.db('medcab');
 
 expressClient.listen(port, async () => {
   console.log(`Listening on port ${port}. Loading all routes...`);
 
-  const routes = await loadAPIRoutes(expressClient, db);
+  const routes = await loadAPIRoutes(expressClient);
 
   console.log(`A total of ${routes} routes were loaded.`);
 });

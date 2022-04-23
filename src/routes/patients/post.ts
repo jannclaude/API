@@ -1,10 +1,9 @@
 import { Router } from 'express';
-import { Db } from 'mongodb';
+import { db } from '../../index.js';
 import { Patient } from '../../utils/types.js';
 
 // Add a new patient
-export default function (endpoint: string, router: Router, db: Db): Router {
-  return router.post(endpoint, async (req, res) => {
+export default function (endpoint: string, router: Router): Router {
     const patient: Patient = {
       name: req.body.name,
       age: req.body.age,

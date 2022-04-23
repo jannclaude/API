@@ -1,9 +1,9 @@
 import { Router } from 'express';
-import { Db, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
+import { db } from '../../../../index.js';
 
 // Get all of the medications of a patient
-export default function (endpoint: string, router: Router, db: Db): Router {
-  return router.get(endpoint, async (req, res) => {
+export default function (endpoint: string, router: Router): Router {
     const medications = await db
       .collection('medications')
       .aggregate([

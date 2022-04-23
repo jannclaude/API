@@ -1,8 +1,9 @@
 import { Router } from 'express';
-import { Db, ObjectId } from 'mongodb';
+import { ObjectId } from 'mongodb';
+import { db } from '../../../index.js';
 
 // Update a single medicine
-export default function (endpoint: string, router: Router, db: Db): Router {
+export default function (endpoint: string, router: Router): Router {
   return router.patch(endpoint, async (req, res) => {
     const result = await db
       .collection('medicines')
