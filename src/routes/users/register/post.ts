@@ -1,7 +1,7 @@
 import bcrypt from 'bcrypt';
 import { Router } from 'express';
-import { db } from '../../index.js';
-import { User } from '../../utils/types.js';
+import { db } from '../../../index.js';
+import { User } from '../../../utils/types.js';
 
 export default function (endpoint: string, router: Router): Router {
   return router.post(endpoint, async (req, res) => {
