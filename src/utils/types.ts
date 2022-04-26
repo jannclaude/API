@@ -43,7 +43,7 @@ export type Schedule = {
   _id?: ObjectId;
   medication: ObjectId;
   days: Day[];
-  time: string;
+  time: number;
 };
 
 export type Medicine = {
