@@ -2,6 +2,7 @@ import { db } from '../index.js';
 import { toSeconds } from '../utils/helpers.js';
 import { Day, Days } from '../utils/types.js';
 
+const utcOffset = 8;
 const updateFrequency = 5 * 60 * 60;
 
 export function loadController(): void {
@@ -13,7 +14,9 @@ export function getRange(offset = 0): {
   min: { day: Day; time: number };
   max: { day: Day; time: number };
 } {
-  const now = Date.now();
+  let now = Date.now();
+  if (process.env.IN_PROD) now -= utcOffset;
+
   const future = now + offset;
 
   console.log(`${new Date(now)}`);
