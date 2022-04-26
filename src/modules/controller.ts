@@ -15,7 +15,7 @@ export function getRange(offset = 0): {
   max: { day: Day; time: number };
 } {
   let now = Date.now();
-  if (process.env.IN_PROD) now += utcOffset;
+  if (process.env.IN_PROD) now += utcOffset * 3600000;
 
   const future = now + offset;
 
