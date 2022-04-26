@@ -6,12 +6,43 @@ import { middleware } from '../../../modules/auth.js';
 // Get a single patient
 export default function (endpoint: string, router: Router): Router {
   return router.get(endpoint, middleware, async (req, res) => {
-    const patient = await db
+    const result = await db
       .collection('patients')
-      .findOne({ _id: new ObjectId(req.params.patientId) });
+      .aggregate([
+        {
+          $match: {
+            _id: new ObjectId(req.params.patientId),
+          },
+        },
+        {
+          $lookup: {
+            from: 'medications',
+            localField: '_id',
+            foreignField: 'patient',
+            as: 'medications',
+          },
+        },
+        {
+          $unwind: '$medications',
+        },
+        {
+          $lookup: {
+            from: 'medicines',
+            localField: 'medications.medicine',
+            foreignField: '_id',
+            as: 'medications.medicine',
+          },
+        },
+        {
+          $set: {
+            'medications.medicine': { $arrayElemAt: ['$medications.medicine', 0] },
+          },
+        },
+      ])
+      .toArray();
 
-    if (!patient) return res.sendStatus(404);
+    if (result.length === 0) return res.sendStatus(404);
 
-    res.json(patient);
+    res.json(result[0]);
   });
 }
