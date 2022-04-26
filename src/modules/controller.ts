@@ -77,6 +77,22 @@ export async function getMedications(): Promise<void> {
           as: '_medications',
         },
       },
+      {
+        $lookup: {
+          from: 'medicines',
+          localField: '_medications.medicine',
+          foreignField: '_id',
+          as: '_medicines',
+        },
+      },
+      {
+        $set: {
+          medicine: { $arrayElemAt: ['$_medicines', 0] },
+        },
+      },
+      {
+        $project: { _medications: 0, _medicines: 0, days: 0 },
+      },
     ])
     .toArray();
 
