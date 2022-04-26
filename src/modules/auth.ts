@@ -1,7 +1,7 @@
 import { NextFunction, Request, Response } from 'express';
 import jwt, { JwtPayload } from 'jsonwebtoken';
 import { ObjectId } from 'mongodb';
-import { db } from '../index.js';
+import { db } from './db.js';
 import { User } from '../utils/types.js';
 
 const jwt_secret = process.env.JWT_SECRET!;

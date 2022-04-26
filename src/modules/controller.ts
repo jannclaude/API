@@ -1,4 +1,4 @@
-import { db } from '../index.js';
+import { db } from './db.js';
 import { getTimestamp, toSeconds } from '../utils/helpers.js';
 import { Day, Days } from '../utils/types.js';
 

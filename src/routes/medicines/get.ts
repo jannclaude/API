@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { db } from '../../index.js';
+import { db } from '../../modules/db.js';
 
 // Get all medicines
 export default function (endpoint: string, router: Router): Router {

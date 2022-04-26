@@ -1,6 +1,6 @@
 import { Router } from 'express';
 import { ObjectId } from 'mongodb';
-import { db } from '../../../index.js';
+import { db } from '../../../modules/db.js';
 
 // Delete a single medicine
 export default function (endpoint: string, router: Router): Router {

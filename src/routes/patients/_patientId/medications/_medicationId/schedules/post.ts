@@ -1,7 +1,7 @@
 import { Router } from 'express';
 import { ObjectId } from 'mongodb';
-import { db } from '../../../../../../index.js';
 import { middleware } from '../../../../../../modules/auth.js';
+import { db } from '../../../../../../modules/db.js';
 import { Schedule } from '../../../../../../utils/types.js';
 
 // Add a new schedule to the medication of a patient

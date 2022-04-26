@@ -1,6 +1,6 @@
 import { Router } from 'express';
-import { db } from '../../index.js';
 import { middleware } from '../../modules/auth.js';
+import { db } from '../../modules/db.js';
 import { Patient } from '../../utils/types.js';
 
 // Add a new patient

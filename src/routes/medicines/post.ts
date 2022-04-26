@@ -1,5 +1,5 @@
 import { Router } from 'express';
-import { db } from '../../index.js';
+import { db } from '../../modules/db.js';
 import { Medicine } from '../../utils/types.js';
 
 // Add a new medicine
