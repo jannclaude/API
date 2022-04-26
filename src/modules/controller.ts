@@ -3,7 +3,7 @@ import { toSeconds } from '../utils/helpers.js';
 import { Day, Days } from '../utils/types.js';
 
 const utcOffset = 8;
-const updateFrequency = 5 * 60 * 60;
+const updateFrequency = 5 * 60 * 1000;
 
 export function loadController(): void {
   getMedications();
