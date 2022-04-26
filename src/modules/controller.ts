@@ -16,6 +16,8 @@ export function getRange(offset = 0): {
   const now = Date.now();
   const future = now + offset;
 
+  console.log(new Date(now));
+
   const min = {
     day: Days[new Date(now).getDay()],
     time: toSeconds(now),
