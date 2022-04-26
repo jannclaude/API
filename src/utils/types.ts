@@ -14,6 +14,17 @@ export type Day =
   | 'Saturday'
   | 'Sunday';
 
+export const Days = [
+  '',
+  'Monday',
+  'Tuesday',
+  'Wednesday',
+  'Thursday',
+  'Friday',
+  'Saturday',
+  'Sunday',
+] as Day[];
+
 export type Container = 1 | 2 | 3 | 4 | 5;
 
 export type Patient = {
