@@ -1,5 +1,6 @@
 import { Router } from 'express';
 import { ObjectId } from 'mongodb';
+import { DispenseCommand, RingCommand } from './interfaces.js';
 
 export interface APIRoute {
   (endpoint: string, router: Router): Router;
@@ -65,3 +66,5 @@ export type AccessToken = {
   user: ObjectId;
   token: string;
 };
+
+export type Command = RingCommand | DispenseCommand;
