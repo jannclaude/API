@@ -19,24 +19,51 @@ export default function (endpoint: string, router: Router): Router {
             from: 'medications',
             localField: '_id',
             foreignField: 'patient',
-            as: 'medications',
+            as: '_medications',
           },
-        },
-        {
-          $unwind: '$medications',
         },
         {
           $lookup: {
             from: 'medicines',
-            localField: 'medications.medicine',
+            localField: '_medications.medicine',
             foreignField: '_id',
-            as: 'medications.medicine',
+            as: '_medicines',
           },
         },
         {
-          $set: {
-            'medications.medicine': { $arrayElemAt: ['$medications.medicine', 0] },
+          $addFields: {
+            medications: {
+              $map: {
+                input: '$_medications',
+                as: 'm',
+                in: {
+                  $mergeObjects: [
+                    '$$m',
+                    {
+                      name: {
+                        $reduce: {
+                          input: '$_medicines',
+                          initialValue: '',
+                          in: {
+                            $cond: [
+                              {
+                                $eq: ['$$this._id', '$$m.medicine'],
+                              },
+                              '$$this.name',
+                              '$$this.value',
+                            ],
+                          },
+                        },
+                      },
+                    },
+                  ],
+                },
+              },
+            },
           },
+        },
+        {
+          $project: { _medications: 0, _medicines: 0 },
         },
       ])
       .toArray();
