@@ -5,6 +5,7 @@ export interface BaseCommand {
   id: string;
   type: 'ring' | 'dispense';
   time: number;
+  retries: 0;
 }
 
 export interface RingCommand extends BaseCommand {
