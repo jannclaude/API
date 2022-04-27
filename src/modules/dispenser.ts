@@ -38,8 +38,6 @@ export async function executeCommand(command: Command): Promise<void> {
       ? [command.id, command.type]
       : [command.id, command.type, command.container];
 
-  await mqttPublish('MedCabCommandsRRC', payload.join('\n'));
-
   // Update time for retry
   command.retries++;
   command.time = toSeconds(getTimestamp()) + 5 * 60;
@@ -51,4 +49,6 @@ export async function executeCommand(command: Command): Promise<void> {
   }
 
   _commands.set(command.id, command);
+
+  await mqttPublish('MedCabCommandsRRC', payload.join('\n'));
 }
