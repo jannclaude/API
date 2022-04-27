@@ -1,6 +1,7 @@
 import express, { json } from 'express';
-import { loadController } from './modules/controller.js';
+import { controllerInit } from './modules/controller.js';
 import { connectDb } from './modules/db.js';
+import { mqttInit } from './modules/mqtt.js';
 import { loadAPIRoutes } from './modules/router.js';
 
 const port = process.env.PORT ?? 3000;
@@ -14,5 +15,6 @@ expressClient.listen(port, async () => {
   const routes = await loadAPIRoutes(expressClient);
   console.log(`A total of ${routes} routes were loaded.`);
 
-  loadController();
+  mqttInit();
+  controllerInit();
 });
