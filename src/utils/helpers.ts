@@ -3,6 +3,10 @@ import path from 'path';
 
 const utcOffset = 8;
 
+export function sleep(ms: number): Promise<void> {
+  return new Promise(resolve => setTimeout(resolve, ms));
+}
+
 export function getFiles(dir: string): string[] {
   return fs.readdirSync(dir).reduce<string[]>((list, file) => {
     const name = path.join(dir, file);
