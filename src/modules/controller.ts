@@ -4,7 +4,7 @@ import { Day, Days } from '../utils/types.js';
 
 const updateFrequency = 5 * 60 * 1000;
 
-export function loadController(): void {
+export function controllerInit(): void {
   getMedications();
   setInterval(getMedications, updateFrequency);
 }
