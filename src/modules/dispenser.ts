@@ -14,6 +14,7 @@ export function loadDispenser(): void {
 export function queueCommand(command: Command): void {
   if (_commands.has(command.id)) return;
   _commands.set(command.id, command);
+  console.log(`Command set: ${command.id}`);
 }
 
 export function deleteCommand(commandId: string): void {
@@ -23,7 +24,12 @@ export function deleteCommand(commandId: string): void {
 export function processCommands(): void {
   const now = toSeconds(getTimestamp());
   const commands = [..._commands.values()];
-  const toExecute = commands.filter(command => command.time <= now).sort((a, b) => a.time - b.time);
+  let toExecute = commands.filter(command => command.time <= now).sort((a, b) => a.time - b.time);
+
+  if (toExecute.length > 0) {
+    // Ring
+    toExecute = [{ id: '_ring', type: 'ring', time: now, retries: 0 }, ...toExecute];
+  }
 
   for (const command of toExecute) {
     _queuer.queue(async () => {
@@ -49,6 +55,8 @@ export async function executeCommand(command: Command): Promise<void> {
   }
 
   _commands.set(command.id, command);
+
+  console.log(`Execute command: ${command.id}`);
 
   await mqttPublish('MedCabCommandsRRC', payload.join('\n'));
 }
