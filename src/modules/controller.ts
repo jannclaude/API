@@ -1,6 +1,7 @@
 import { db } from './db.js';
+import { queueCommand } from './dispenser.js';
 import { getTimestamp, toSeconds } from '../utils/helpers.js';
-import { Day, Days } from '../utils/types.js';
+import { Command, Day, Days } from '../utils/types.js';
 
 const updateFrequency = 5 * 60 * 1000;
 
@@ -63,7 +64,7 @@ export async function getMedications(): Promise<void> {
           ],
         };
 
-  const result = await db
+  const documents = await db
     .collection('schedules')
     .aggregate([
       {
@@ -96,5 +97,20 @@ export async function getMedications(): Promise<void> {
     ])
     .toArray();
 
-  console.log(result);
+  const commands = documents.map(document => {
+    const command = {
+      id: document._id,
+      type: 'dispense',
+      patient: document._id,
+      medication: document.medication,
+      medicine: document.medicine._id,
+      container: document.medicine.container,
+      time: document.time,
+      retries: 0,
+    } as Command;
+
+    return command;
+  });
+
+  commands.forEach(command => queueCommand(command));
 }
