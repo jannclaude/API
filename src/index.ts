@@ -1,6 +1,7 @@
 import express, { json } from 'express';
 import { controllerInit } from './modules/controller.js';
 import { connectDb } from './modules/db.js';
+import { loadDispenser } from './modules/dispenser.js';
 import { mqttInit } from './modules/mqtt.js';
 import { loadAPIRoutes } from './modules/router.js';
 
@@ -17,4 +18,5 @@ expressClient.listen(port, async () => {
 
   mqttInit();
   controllerInit();
+  loadDispenser();
 });
