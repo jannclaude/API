@@ -1,9 +1,12 @@
+import { ObjectId } from 'mongodb';
+import { db } from './db.js';
 import { mqttPublish } from './mqtt.js';
-import { getTimestamp, toSeconds } from '../utils/helpers.js';
-import { Command } from '../utils/types.js';
+import { getTimestamp, toDate, toSeconds } from '../utils/helpers.js';
+import { Command, DispenseStatus, Log } from '../utils/types.js';
 
 const _commands = new Map<string, Command>();
 const _toExecute = [] as Command[];
+const _executed = new Map<string, Command>();
 
 export function loadDispenser(): void {
   processCommands();
@@ -38,8 +41,38 @@ export function processCommands(): void {
 }
 
 export function commandShift(): { command: Command | undefined; length: number } {
-  return {
-    command: _toExecute.shift(),
-    length: _toExecute.length,
+  const command = _toExecute.shift();
+  const length = _toExecute.length;
+
+  if (command) _executed.set(command.id, command);
+
+  return { command, length };
+}
+
+export async function logDispense(id: string, status: DispenseStatus): Promise<void> {
+  const commmand = _executed.get(id);
+  if (!commmand) return;
+
+  const medication = await db.collection('medication').findOne({ _id: new ObjectId(id) });
+  if (!medication) return;
+
+  const patient = await db.collection('patient').findOne({ _id: new ObjectId(medication.patient) });
+  if (!patient) return;
+
+  const medicine = await db
+    .collection('medicine')
+    .findOne({ _id: new ObjectId(medication.medicine) });
+  if (!medicine) return;
+
+  const schedule = await db.collection('schedule').findOne({ medication: medication._id });
+  if (!schedule) return;
+
+  const log: Log = {
+    patientId: medication.patient,
+    medicineName: medicine.name,
+    schedule: toDate(schedule.time),
+    status: status,
   };
+
+  await db.collection('logs').insertOne(log);
 }
