@@ -99,14 +99,12 @@ export async function getMedications(): Promise<void> {
 
   const commands = documents.map(document => {
     const command = {
-      id: document._id,
+      id: document.medication,
       type: 'dispense',
       patient: document._id,
-      medication: document.medication,
       medicine: document.medicine._id,
       container: document.medicine.container,
       time: document.time,
-      retries: 0,
     } as Command;
 
     return command;

@@ -5,8 +5,10 @@ import { getTimestamp, toDate, toSeconds } from '../utils/helpers.js';
 import { Command, DispenseStatus, Log } from '../utils/types.js';
 
 const _commands = new Map<string, Command>();
-const _toExecute = [] as Command[];
+const _toExecute = [] as string[];
 const _executed = new Map<string, Command>();
+
+const ringCommand: Command = { id: '_ring', type: 'ring', time: 0 };
 
 export function loadDispenser(): void {
   processCommands();
@@ -25,24 +27,37 @@ export function deleteCommand(commandId: string): void {
 export function processCommands(): void {
   const now = toSeconds(getTimestamp());
   let toExecute = [..._commands.values()]
-    .filter(command => command.time <= now)
+    .filter(command => command.time <= now && !_toExecute.includes(command.id))
     .sort((a, b) => a.time - b.time);
 
   if (toExecute.length > 0) {
     // Ring
-    toExecute = [{ id: '_ring', type: 'ring', time: now, retries: 0 }, ...toExecute];
+    toExecute = [ringCommand, ...toExecute];
   }
 
   for (const command of toExecute) {
     const notify = _toExecute.length === 0;
-    _toExecute.push(command);
-    if (notify) mqttPublish('MedCab-Container-RRC', 'New Command');
+    _toExecute.push(command.id);
+    if (notify) mqttPublish('MedCabCommandsRRC', 'New Command');
   }
+
+  console.log({ _commands, _toExecute, _executed });
 }
 
 export function commandShift(): { command: Command | undefined; length: number } {
-  const command = _toExecute.shift();
+  const commandId = _toExecute.shift();
   const length = _toExecute.length;
+  if (!commandId) return { command: undefined, length };
+
+  if (commandId === '_ring') {
+    return { command: ringCommand, length };
+  }
+
+  const command = _commands.get(commandId);
+
+  _commands.delete(commandId);
+
+  console.log({ command, length });
 
   if (command) _executed.set(command.id, command);
 
