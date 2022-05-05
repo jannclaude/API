@@ -68,3 +68,12 @@ export type AccessToken = {
 };
 
 export type Command = RingCommand | DispenseCommand;
+
+export type DispenseStatus = 'Success' | 'Failed';
+
+export type Log = {
+  patientId: string;
+  medicineName: string;
+  schedule: Date;
+  status: DispenseStatus;
+};
