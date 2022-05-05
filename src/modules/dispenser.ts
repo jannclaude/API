@@ -1,10 +1,9 @@
 import { mqttPublish } from './mqtt.js';
 import { getTimestamp, toSeconds } from '../utils/helpers.js';
-import { Queuer } from '../utils/queuer.js';
 import { Command } from '../utils/types.js';
 
 const _commands = new Map<string, Command>();
-const _queuer = new Queuer();
+const _toExecute = [] as Command[];
 
 export function loadDispenser(): void {
   processCommands();
@@ -12,7 +11,6 @@ export function loadDispenser(): void {
 }
 
 export function queueCommand(command: Command): void {
-  if (_commands.has(command.id)) return;
   _commands.set(command.id, command);
   console.log(`Command set: ${command.id}`);
 }
@@ -23,8 +21,9 @@ export function deleteCommand(commandId: string): void {
 
 export function processCommands(): void {
   const now = toSeconds(getTimestamp());
-  const commands = [..._commands.values()];
-  let toExecute = commands.filter(command => command.time <= now).sort((a, b) => a.time - b.time);
+  let toExecute = [..._commands.values()]
+    .filter(command => command.time <= now)
+    .sort((a, b) => a.time - b.time);
 
   if (toExecute.length > 0) {
     // Ring
@@ -32,31 +31,15 @@ export function processCommands(): void {
   }
 
   for (const command of toExecute) {
-    _queuer.queue(async () => {
-      await executeCommand(command);
-    });
+    const notify = _toExecute.length === 0;
+    _toExecute.push(command);
+    if (notify) mqttPublish('MedCab-Container-RRC', 'New Command');
   }
 }
 
-export async function executeCommand(command: Command): Promise<void> {
-  const payload =
-    command.type === 'ring'
-      ? [command.id, command.type]
-      : [command.id, command.type, command.container];
-
-  // Update time for retry
-  command.retries++;
-  command.time = toSeconds(getTimestamp()) + 5 * 60;
-
-  if (command.retries === 4) {
-    console.log('Expired Command');
-    console.log(command);
-    return deleteCommand(command.id);
-  }
-
-  _commands.set(command.id, command);
-
-  console.log(`Execute command: ${command.id}`);
-
-  await mqttPublish('MedCabCommandsRRC', payload.join('\n'));
+export function commandShift(): { command: Command | undefined; length: number } {
+  return {
+    command: _toExecute.shift(),
+    length: _toExecute.length,
+  };
 }
