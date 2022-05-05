@@ -24,6 +24,20 @@ export function toSeconds(timestamp: number): number {
   return hours + mins + secs;
 }
 
+export function toDate(seconds: number): Date {
+  const hours = seconds / 3600;
+  seconds -= hours * 3600;
+  const minutes = seconds / 60;
+  seconds -= minutes * 60;
+
+  const date = new Date();
+  date.setHours(hours);
+  date.setMinutes(minutes);
+  date.setSeconds(seconds);
+
+  return date;
+}
+
 export function getTimestamp(): number {
   let now = Date.now();
   if (process.env.IN_PROD) now += utcOffset * 3600000;
