@@ -40,8 +40,6 @@ export async function processCommands(): Promise<void> {
     _toExecute.push(command.id);
     if (notify) await mqttPublish('MedCabCommandsRRC', 'New Command');
   }
-
-  console.log({ _commands, _toExecute, _executed });
 }
 
 export function commandShift(): { command: Command | undefined; length: number } {
@@ -56,8 +54,6 @@ export function commandShift(): { command: Command | undefined; length: number }
   const command = _commands.get(commandId);
 
   _commands.delete(commandId);
-
-  console.log({ command, length });
 
   if (command) _executed.set(command.id, command);
 
