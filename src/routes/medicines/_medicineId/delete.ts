@@ -11,11 +11,7 @@ export default function (endpoint: string, router: Router): Router {
 
     const medications = await db.collection('medications').find({ medicine: medicineId }).toArray();
 
-    await db.collection('medications').deleteMany({
-      medication: {
-        $in: medications.map(e => e._id),
-      },
-    });
+    await db.collection('medications').deleteMany({ medicine: medicineId });
 
     await db.collection('schedules').deleteMany({
       medication: {
