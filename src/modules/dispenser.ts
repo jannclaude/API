@@ -12,7 +12,7 @@ const ringCommand: Command = { id: '_ring', type: 'ring', time: 0 };
 
 export function loadDispenser(): void {
   processCommands();
-  setInterval(processCommands, 1000);
+  setInterval(processCommands, 5000);
 }
 
 export function queueCommand(command: Command): void {
@@ -24,7 +24,7 @@ export function deleteCommand(commandId: string): void {
   _commands.delete(commandId);
 }
 
-export function processCommands(): void {
+export async function processCommands(): Promise<void> {
   const now = toSeconds(getTimestamp());
   let toExecute = [..._commands.values()]
     .filter(command => command.time <= now && !_toExecute.includes(command.id))
@@ -38,7 +38,7 @@ export function processCommands(): void {
   for (const command of toExecute) {
     const notify = _toExecute.length === 0;
     _toExecute.push(command.id);
-    if (notify) mqttPublish('MedCabCommandsRRC', 'New Command');
+    if (notify) await mqttPublish('MedCabCommandsRRC', 'New Command');
   }
 
   console.log({ _commands, _toExecute, _executed });
