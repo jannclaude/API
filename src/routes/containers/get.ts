@@ -5,7 +5,7 @@ import { db } from '../../modules/db.js';
 // Get containers
 export default function (endpoint: string, router: Router): Router {
   return router.get(endpoint, middleware, async (_, res) => {
-    const containers = await db.collection('medicines').find().toArray();
+    const containers = await db.collection('medicines').find().sort('container').toArray();
 
     res.json(containers);
   });
