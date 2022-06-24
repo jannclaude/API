@@ -5,8 +5,12 @@ import { db } from '../../modules/db.js';
 // Get containers
 export default function (endpoint: string, router: Router): Router {
   return router.get(endpoint, middleware, async (_, res) => {
-    const containers = await db.collection('medicines').find().sort('container').toArray();
+    try {
+      const containers = await db.collection('medicines').find().sort('container').toArray();
 
-    res.json(containers);
+      res.json(containers);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   });
 }

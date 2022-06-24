@@ -6,31 +6,35 @@ import { db } from '../../../../modules/db.js';
 // Get all of the medications of a patient
 export default function (endpoint: string, router: Router): Router {
   return router.get(endpoint, middleware, async (req, res) => {
-    const medications = await db
-      .collection('medications')
-      .aggregate([
-        {
-          $match: {
-            patient: new ObjectId(req.params.patientId),
+    try {
+      const medications = await db
+        .collection('medications')
+        .aggregate([
+          {
+            $match: {
+              patient: new ObjectId(req.params.patientId),
+            },
           },
-        },
-        {
-          $lookup: {
-            from: 'medicines',
-            localField: 'medicine',
-            foreignField: '_id',
-            as: 'medicines',
+          {
+            $lookup: {
+              from: 'medicines',
+              localField: 'medicine',
+              foreignField: '_id',
+              as: 'medicines',
+            },
           },
-        },
-        {
-          $set: {
-            medicine: { $arrayElemAt: ['$medicines', 0] },
+          {
+            $set: {
+              medicine: { $arrayElemAt: ['$medicines', 0] },
+            },
           },
-        },
-        { $project: { medicines: 0 } },
-      ])
-      .toArray();
+          { $project: { medicines: 0 } },
+        ])
+        .toArray();
 
-    res.json(medications);
+      res.json(medications);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   });
 }

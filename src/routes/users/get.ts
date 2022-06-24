@@ -5,8 +5,12 @@ import { db } from '../../modules/db.js';
 // Get all patients
 export default function (endpoint: string, router: Router): Router {
   return router.get(endpoint, middleware, async (_, res) => {
-    const users = await db.collection('users').find().toArray();
+    try {
+      const users = await db.collection('users').find().toArray();
 
-    res.json(users);
+      res.json(users);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   });
 }

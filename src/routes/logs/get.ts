@@ -5,7 +5,11 @@ import { db } from '../../modules/db.js';
 // Get single command
 export default function (endpoint: string, router: Router): Router {
   return router.get(endpoint, middleware, async (_, res) => {
-    const logs = await db.collection('logs').find().toArray();
-    res.json(logs);
+    try {
+      const logs = await db.collection('logs').find().toArray();
+      res.json(logs);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   });
 }

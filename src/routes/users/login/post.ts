@@ -6,18 +6,22 @@ import { User } from '../../../utils/types.js';
 
 export default function (endpoint: string, router: Router): Router {
   return router.post(endpoint, async (req, res) => {
-    const user = await db.collection('users').findOne({ email: req.body.email });
-    if (!user) return res.status(400).json({ error: "Email doesn't exist." });
+    try {
+      const user = await db.collection('users').findOne({ email: req.body.email });
+      if (!user) return res.status(400).json({ error: "Email doesn't exist." });
 
-    const validPassword = await bcrypt.compare(req.body.password, user.password);
-    if (!validPassword) return res.status(400).json({ error: 'Invalid password.' });
+      const validPassword = await bcrypt.compare(req.body.password, user.password);
+      if (!validPassword) return res.status(400).json({ error: 'Invalid password.' });
 
-    const token = await authorize(user as User);
+      const token = await authorize(user as User);
 
-    const safeUser = { ...user };
-    safeUser.password = undefined;
-    safeUser.token = token;
+      const safeUser = { ...user };
+      safeUser.password = undefined;
+      safeUser.token = token;
 
-    res.json(safeUser);
+      res.json(safeUser);
+    } catch (error) {
+      res.status(500).json(error);
+    }
   });
 }
