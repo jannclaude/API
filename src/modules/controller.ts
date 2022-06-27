@@ -3,7 +3,7 @@ import { queueCommand } from './dispenser.js';
 import { getTimestamp, toSeconds } from '../utils/helpers.js';
 import { Command, Day, Days } from '../utils/types.js';
 
-const updateFrequency = 5 * 60 * 1000;
+const updateFrequency = 1 * 60 * 1000;
 
 export function controllerInit(): void {
   getMedications();
