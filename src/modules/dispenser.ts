@@ -90,5 +90,7 @@ export async function logDispense(id: string, status: DispenseStatus): Promise<v
     status: status,
   };
 
-  await db.collection('logs').insertOne(log);
+  const result = await db.collection('logs').insertOne(log);
+
+  if (!result.acknowledged) throw new Error('Failed to update logs.');
 }
