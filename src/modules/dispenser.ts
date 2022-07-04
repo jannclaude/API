@@ -6,7 +6,7 @@ import { Command, DispenseStatus, Log } from '../utils/types.js';
 
 const _commands = new Map<string, Command>();
 const _toExecute = [] as string[];
-const _executed = new Map<string, Command>();
+const _executing = new Map<string, Command>();
 
 const ringCommand: Command = { id: '_ring', type: 'ring', time: 0 };
 
@@ -55,28 +55,30 @@ export function commandShift(): { command: Command | undefined; length: number }
 
   _commands.delete(commandId);
 
-  if (command) _executed.set(command.id, command);
+  if (command) _executing.set(command.id, command);
 
   return { command, length };
 }
 
 export async function logDispense(id: string, status: DispenseStatus): Promise<void> {
-  const commmand = _executed.get(id);
-  if (!commmand) return;
+  const commmand = _executing.get(id);
+  if (!commmand) throw new Error('Command id invalid.');
 
-  const medication = await db.collection('medication').findOne({ _id: new ObjectId(id) });
-  if (!medication) return;
+  const medication = await db.collection('medications').findOne({ _id: new ObjectId(id) });
+  if (!medication) throw new Error('Medication not found.');
 
-  const patient = await db.collection('patient').findOne({ _id: new ObjectId(medication.patient) });
-  if (!patient) return;
+  const patient = await db
+    .collection('patients')
+    .findOne({ _id: new ObjectId(medication.patient) });
+  if (!patient) throw new Error('Patient not found.');
 
   const medicine = await db
-    .collection('medicine')
+    .collection('medicines')
     .findOne({ _id: new ObjectId(medication.medicine) });
-  if (!medicine) return;
+  if (!medicine) throw new Error('Medicine not found.');
 
-  const schedule = await db.collection('schedule').findOne({ medication: medication._id });
-  if (!schedule) return;
+  const schedule = await db.collection('schedules').findOne({ medication: medication._id });
+  if (!schedule) throw new Error('Schedule not found.');
 
   const log: Log = {
     patientId: medication.patient,
