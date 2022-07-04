@@ -81,7 +81,10 @@ export async function logDispense(id: string, status: DispenseStatus): Promise<v
   if (!schedule) throw new Error('Schedule not found.');
 
   const log: Log = {
-    patientId: medication.patient,
+    medicationId: medication._id,
+    patientId: patient._id,
+    patientName: patient.name,
+    medicineId: medicine._id,
     medicineName: medicine.name,
     schedule: toDate(schedule.time),
     status: status,

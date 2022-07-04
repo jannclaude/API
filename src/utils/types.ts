@@ -72,7 +72,10 @@ export type Command = RingCommand | DispenseCommand;
 export type DispenseStatus = 'Success' | 'Failed';
 
 export type Log = {
-  patientId: string;
+  medicationId: ObjectId;
+  patientId: ObjectId;
+  patientName: string;
+  medicineId: ObjectId;
   medicineName: string;
   schedule: Date;
   status: DispenseStatus;
