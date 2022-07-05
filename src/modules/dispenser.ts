@@ -55,7 +55,7 @@ export function commandShift(): { command: Command | undefined; length: number }
 
   _commands.delete(commandId);
 
-  if (command) _executing.set(command.id, command);
+  if (command) _executing.set(command.id.toString(), command);
 
   return { command, length };
 }
